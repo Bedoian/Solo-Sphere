@@ -8,7 +8,7 @@ const TabJobs = () => {
     const[jobs,setjob]=useState([])
     useEffect(()=>{
         const getData=async()=>{
-            const{data}=await axios('http://localhost:9000/jobs')
+            const{data}=await axios('https://solospehre-new.vercel.app/jobs')
             setjob(data)
         }
         getData()
@@ -16,7 +16,7 @@ const TabJobs = () => {
     return (
 
         <div>
-            <h1 className='text-3xl font-bold text-center mt-8'>Browose Job By Category</h1>
+            <h1 className='lg:text-3xl text-xl  font-bold text-center mt-8'>Browose Job By Category</h1>
             <p className='text-center text-gray-500 my-2'>Here you can choose you desire cadidate for making a website for you and can be able to help your digital marketing project.</p>
             <div className='flex justify-center container px-6 py-10'>
                 <div className=''>

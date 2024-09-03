@@ -4,7 +4,7 @@ import Swipers from '../Components/Swipers'
 const Home = () => {
     return (
         <div>
-            <div className=" mx-20">
+            <div className=" lg:mx-20">
                 <Swipers></Swipers>
             </div>
             <TabJobs></TabJobs>

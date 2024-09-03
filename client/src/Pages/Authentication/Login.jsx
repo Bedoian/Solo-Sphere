@@ -1,12 +1,16 @@
-import { useContext } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../Provider/AuthProvider"
 import toast from "react-hot-toast"
-
+import axios from "axios"
 const Login = () => {
   const navigate = useNavigate()
-  const { signIn, signInWithGoogle } = useContext(AuthContext)
-
+  const location=useLocation();
+  const form=location.state  || '/'
+  const { signIn, signInWithGoogle ,user,loading} = useContext(AuthContext)
+  useEffect(()=>{
+    if(user)return navigate('/')
+  },[user])
   const handleSignIn= async e=>{
     e.preventDefault()
     const form=e.target
@@ -18,7 +22,9 @@ const Login = () => {
     try{
       const result=await signIn(email,password)
       console.log(result.user)
-      navigate('/')
+      const{data}=await axios.post('https://solospehre-new.vercel.app/jwt',{email:result?.user?.email},{withCredentials:true})
+      console.log(data)
+      navigate(form,{replace:true})
       toast.success('user logged in successfully')
     }
     catch(err){
@@ -29,9 +35,11 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle()
+    const result= await signInWithGoogle()
+     const{data}=await axios.post('https://solospehre-new.vercel.app/jwt',{email:result?.user?.email},{withCredentials:true})
+     console.log(data)
       toast.success('created successfully')
-      navigate('/')
+      navigate(form,{replace:true})
 
     }
     catch (err) {
@@ -39,6 +47,7 @@ const Login = () => {
       toast.error(err?.message)
     }
   }
+  if(user || loading) return
   return (
     <div className='flex justify-center items-center min-h-[calc(100vh-306px)]'>
       <div className='flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg  lg:max-w-4xl '>

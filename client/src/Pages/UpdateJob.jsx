@@ -1,16 +1,17 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { AuthContext } from "../Provider/AuthProvider";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 const UpdateJob = () => {
+    const axiosSecure=useAxiosSecure()
     const navigate=useNavigate()
     const loadedData=useLoaderData()
     const{job_title,buyer_email,category,min_price,max_price,description,_id,deadline
     }=loadedData
-    const{user}=useContext(AuthContext)
+    const{user}=useAuth()
     const [startDate, setStartDate] = useState(new Date(deadline));
     const handleUpdate=async e=>{
         e.preventDefault()
@@ -36,7 +37,7 @@ const UpdateJob = () => {
 
         }
         try{
-            const{data}=await axios.put(`http://localhost:9000/job/${_id}`,jobData)
+            const{data}=await axiosSecure.put(`/job/${_id}`,jobData)
             console.log(data)
             toast.success('Data Updated Successfully')
             navigate('/postedJob')

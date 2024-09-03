@@ -1,11 +1,12 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { AuthContext } from "../Provider/AuthProvider";
-import axios from "axios";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 const AddJob = () => {
     const [startDate, setStartDate] = useState(new Date());
-    const { user } = useContext(AuthContext)
+    const axiosSecure=useAxiosSecure()
+    const { user } = useAuth()
     const handleAddJob = async e => {
         e.preventDefault()
         const form = e.target
@@ -15,7 +16,7 @@ const AddJob = () => {
         const min_price = form.min_price.value;
         const max_price = form.max_price.value;
         const description = form.description.value;
-        const buyer_email=form.email.value;
+        const buyer_email = form.email.value;
 
         const jobData = {
             job_title,
@@ -24,13 +25,15 @@ const AddJob = () => {
             min_price,
             max_price,
             description,
-            buyer_email,
-            name: user?.displayName,
-            photo: user?.photoURL
+            buyer: {
+                email: buyer_email,
+                name: user?.displayName,
+                photo: user?.photoURL
+            }
 
         }
         try {
-            const { data } = await axios.post('http://localhost:9000/jobs', jobData)
+            const { data } = await axiosSecure.post('/jobs', jobData)
             form.reset()
             console.log(data)
         }

@@ -9,6 +9,8 @@ import MyPostedJobs from "../Pages/MyPostedJob";
 import MyBids from "../Pages/Mybids";
 import BidRequests from "../Pages/BidRequests";
 import UpdateJob from "../Pages/UpdateJob";
+import PrivetRoute from "./PrivetRoute";
+import AllJobs from "../Pages/AllJobs";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -29,29 +31,33 @@ const router = createBrowserRouter([
             },
             {
                 path:'/job/:id',
-                element:<JobDetails></JobDetails>,
-                loader:({params})=>fetch(`http://localhost:9000/job/${params.id}`)
+                element:<PrivetRoute><JobDetails/></PrivetRoute>,
+                loader:({params})=>fetch(`https://solospehre-new.vercel.app/job/${params.id}`)
             },
             {
                 path:'/addJob',
-                element:<AddJob></AddJob>
+                element:<PrivetRoute><AddJob/></PrivetRoute> 
             },
             {
                 path:'/postedJob',
-                element:<MyPostedJobs/>
+                element:<PrivetRoute><MyPostedJobs/></PrivetRoute>
             },
             {
                 path:'/mybids',
-                element:<MyBids/>
+                element:<PrivetRoute><MyBids/></PrivetRoute>,
             },
             {
                 path:'/bidReq',
-                element:<BidRequests/>
+                element:<PrivetRoute> <BidRequests/></PrivetRoute>
             },
             {
                 path:'/update/:id',
                 element:<UpdateJob/>,
-                loader:({params})=>fetch(`http://localhost:9000/job/${params.id}`)
+                loader:({params})=>fetch(`https://solospehre-new.vercel.app/job/${params.id}`)
+            },
+            {
+                path:'/alljobs',
+                element:<AllJobs></AllJobs>
             }
         ]
     },

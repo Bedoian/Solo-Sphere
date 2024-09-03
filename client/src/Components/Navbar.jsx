@@ -2,7 +2,6 @@ import logo from '../assets/images/logo.png'
 import { useContext } from 'react'
 import { AuthContext } from '../Provider/AuthProvider'
 import { Link } from 'react-router-dom'
-import { IoHomeSharp } from "react-icons/io5";
 const Navbar = () => {
   const { user ,logOut} = useContext(AuthContext)
   return (
@@ -16,7 +15,12 @@ const Navbar = () => {
       <div className='flex-none'>
         <ul className='menu menu-horizontal px-1'>
           <li className=''>
-            <Link className='text-purple-600 text-xl' to='/'>< IoHomeSharp /></Link>
+            <Link className='' to='/'>Home</Link>
+          </li>
+          <li>
+            <Link to='/allJobs'>
+            AllJobs
+            </Link>
           </li>
 
           {

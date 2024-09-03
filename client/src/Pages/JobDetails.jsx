@@ -1,17 +1,17 @@
-import { useContext } from "react"
 import { useLoaderData } from "react-router-dom"
-import { AuthContext } from "../Provider/AuthProvider"
 import  { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
 import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const JobDetails = () => {
-  const { user } = useContext(AuthContext)
+  const { user } = useAuth()
   const data = useLoaderData()
+  const axiosSecure=useAxiosSecure()
 
-  const { _id, buyer_email, deadline, description, job_title, min_price, max_price,name } = data
+  const { _id, deadline, description, job_title, min_price, max_price, buyer,category} = data
   const [startDate, setStartDate] = useState(new Date());
   const handleFormSubmission = async e => {
    
@@ -22,27 +22,36 @@ const JobDetails = () => {
     const price = parseFloat(form.price.value)
     if(price<min_price)return toast.error('The Price you are offering me in less then my minimum')
     const email = form.email.value;
-    if(buyer_email===email)return toast.error('You cannot hier yourself fucker')
+    if(buyer.email===email)return toast.error('You cannot hier yourself fucker')
     const comment = form.comment.value;
     const status = 'Pending'
 
     const bidData = {
       job_id,
+      job_title,
+      category,
       price,
       email,
       comment,
       status,
-      buyer_email,
-      deadline
+      deadline,
+      buyer:{
+        email:buyer.email,
+        name:buyer.name,
+        photo:buyer.photo
+      }
     }
 
     try {
-      const { data } = await axios.post('http://localhost:9000/bid', bidData)
+      const { data } = await axiosSecure.post('/bid', bidData)
+      toast.success('Your bid is added to the database')
       console.log(data)
     }
     catch (err) {
       console.log(err)
       console.log('hi i am error ',err.message)
+      toast.error(err.response.data)
+      form.reset()
     }
   }
   return (
@@ -71,9 +80,9 @@ const JobDetails = () => {
           </p>
           <div className='flex items-center gap-5'>
             <div>
-              <p className='mt-2 text-sm  text-gray-600 '>Name:{name}</p>
+              <p className='mt-2 text-sm  text-gray-600 '>Name:{buyer.name}</p>
               <p className='mt-2 text-sm  text-gray-600 '>
-                Email:{buyer_email}
+                Email:{buyer.email}
               </p>
             </div>
             <div className='rounded-full object-cover overflow-hidden w-14 h-14'>
